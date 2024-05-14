@@ -1,34 +1,25 @@
 package com.jeon.composepractice
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jeon.composepractice.ui.theme.ComposePracticeTheme
+
+// remember
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,10 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
-                        MyTextEx()
-                        MyBtn()
-                    }
+                    SimpleCounterBtn()
                 }
             }
         }
@@ -51,50 +39,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MyTextEx(){
-    Text(
-        text = "This is Compose",
-        fontSize = 18.sp,
-        color = Color.Red,
-        fontStyle = FontStyle.Italic,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(30.dp),
-        style = TextStyle(background = Color.Blue)
-    )
-}
+fun SimpleCounterBtn(){
 
-@Composable
-fun MyBtn(){
+    var count by remember { mutableStateOf(0) }
 
-    val context: Context = LocalContext.current
-
-    Button(onClick = {
-        Log.d("Main", "onClicked")
-        Toast.makeText(context, "버튼이 클릭 되었습니다.", Toast.LENGTH_SHORT).show()
-    },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Yellow,
-            contentColor = Color.Black
-        ),
-        modifier = Modifier
-            .width(120.dp)
-            .height(60.dp),
+    Button(
+        onClick = { count++ },
+        modifier = Modifier.fillMaxSize(),
     ) {
         Text(
-            text = "This is Button",
-            lineHeight = 30.sp,
-            fontSize = 20.sp,
-            color = Color.Blue
+            text = "Count = $count",
+            fontSize = 60.sp
         )
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
@@ -105,10 +63,7 @@ fun GreetingPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Column {
-                MyTextEx()
-                MyBtn()
-            }
+            SimpleCounterBtn()
         }
     }
 }
