@@ -4,12 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,26 +42,55 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                imageViewPractice2()
+                boxPractice()
             }
         }
     }
 }
-@Composable
-fun imageViewPractice(){
-    Image(
-        painter = painterResource(id = R.drawable.test_image),
-        contentDescription = "This is my image"
-    )
-}
 
 @Composable
-fun imageViewPractice2(){
-    AsyncImage(
-        model = "https://png.pngtree.com/png-vector/20220411/ourmid/pngtree-red-3d-heart-emoji-realistic-shadow-png-image_4539964.png",
-        contentDescription = "This is Love",
-        modifier = Modifier.fillMaxSize()
-    )
+private fun boxPractice(){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Red)
+    ){
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .background(color = Color.Blue)
+                .padding(16.dp)
+                .align(Alignment.TopStart)
+        ){
+            Text(text = "좌 상단 박스!")
+        }
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .background(color = Color.Black)
+                .padding(16.dp)
+                .align(Alignment.Center)
+        ){
+            Text(text = "중간 박스!")
+        }
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .background(color = Color.Gray)
+                .padding(16.dp)
+                .align(Alignment.BottomEnd)
+        ){
+            Text(text = "우 하단 박스!")
+        }
+        Button(
+            onClick = {/*TODO*/ },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(16.dp)
+        ) {
+            Text(text = "Top Button")
+        }
+    }
 }
 
 @Preview(showBackground = true)
@@ -69,7 +101,7 @@ fun GreetingPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            imageViewPractice2()
+            boxPractice()
         }
     }
 }
