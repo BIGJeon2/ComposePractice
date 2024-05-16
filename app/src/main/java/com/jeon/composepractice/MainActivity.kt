@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -56,24 +57,67 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                WebViewPractice("https://www.daum.net/")
+                //Surface -> Contents를 담아 놓는 컨테이너
+                SurfacePractice2()
             }
         }
     }
 }
- @Composable
- private fun WebViewPractice(url: String){
-    AndroidView(factory = {
-        WebView(it).apply {
-            loadUrl(url)
+     @Composable
+     private fun SurfacePractice(){
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            color = Color.Green,
+            shape = RoundedCornerShape(20.dp),
+            shadowElevation = 20.dp
+        ) {
+            Button(
+                onClick = { },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = Color.Blue
+                )
+                ) {
+                Text(text = "This is Button!")
+            }
         }
-    })
- }
+     }
+
+    @Composable
+    private fun SurfacePractice2(){
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            color = Color.LightGray,
+            border = BorderStroke(2.dp, Color.Red),
+            contentColor = Color.Blue
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .size(200.dp),
+                    color = Color.Red
+                ) {
+                    Text(text = "This is Compose Practice Example")
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = "This is Second TextView")
+            }
+        }
+    }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        WebViewPractice("https://www.daum.net/")
+        SurfacePractice2()
     }
 }
