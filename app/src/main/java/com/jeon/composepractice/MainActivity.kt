@@ -1,6 +1,7 @@
 package com.jeon.composepractice
 
 import android.os.Bundle
+import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
 import com.jeon.composepractice.ui.theme.ComposePracticeTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
@@ -54,53 +56,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                Column {
-                    cardPractice("1")
-                    cardPractice("2")
-                    cardPractice("3")
-                    cardPractice("4")
-
-                }
+                WebViewPractice("https://www.daum.net/")
             }
         }
     }
 }
  @Composable
- private fun cardPractice(index: String){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .padding(10.dp),
-        shape = RoundedCornerShape(50.dp),
-        border = BorderStroke(1.dp, Color.Black),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 3.dp
-            )
-        ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.LightGray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = index,
-                fontSize = 30.sp
-            )
+ private fun WebViewPractice(url: String){
+    AndroidView(factory = {
+        WebView(it).apply {
+            loadUrl(url)
         }
-    }
+    })
  }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        Column {
-            cardPractice("1")
-            cardPractice("2")
-            cardPractice("3")
-            cardPractice("4")
-        }
+        WebViewPractice("https://www.daum.net/")
     }
 }
