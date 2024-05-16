@@ -8,7 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,54 +45,42 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                boxPractice()
+                rowPractice()
             }
         }
     }
 }
 
 @Composable
-private fun boxPractice(){
-    Box(
+private fun rowPractice() {
+    Row (
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Red)
-    ){
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(color = Color.Blue)
-                .padding(16.dp)
-                .align(Alignment.TopStart)
-        ){
-            Text(text = "좌 상단 박스!")
-        }
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(color = Color.Black)
-                .padding(16.dp)
-                .align(Alignment.Center)
-        ){
-            Text(text = "중간 박스!")
-        }
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(color = Color.Gray)
-                .padding(16.dp)
-                .align(Alignment.BottomEnd)
-        ){
-            Text(text = "우 하단 박스!")
-        }
-        Button(
-            onClick = {/*TODO*/ },
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(16.dp)
-        ) {
-            Text(text = "Top Button")
-        }
+            .background(Color.Gray),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Item1",
+            style = TextStyle(
+                background = Color.Blue
+            ),
+            fontSize = 30.sp
+        )
+        Text(
+            text = "Item1",
+            style = TextStyle(
+                background = Color.Green
+            ),
+            fontSize = 30.sp
+        )
+        Text(
+            text = "Item1",
+            style = TextStyle(
+                background = Color.Red
+            ),
+            fontSize = 30.sp
+        )
     }
 }
 
@@ -97,11 +88,6 @@ private fun boxPractice(){
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            boxPractice()
-        }
+        rowPractice()
     }
 }
