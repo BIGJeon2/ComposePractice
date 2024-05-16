@@ -15,10 +15,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -51,126 +54,53 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                ColumnRowPractice2()
+                Column {
+                    cardPractice("1")
+                    cardPractice("2")
+                    cardPractice("3")
+                    cardPractice("4")
+
+                }
             }
         }
     }
 }
-
-@Composable
-private fun ColumnRowPractice() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-            .background(Color.Gray)
-    ) {
-        Text(
-            text = "Hi i am Android Native Developer",
-            color = Color.Blue,
-            fontSize = 20.sp
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.Blue),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Left"
-            )
-            Text(
-                text = "Center"
-            )
-            Text(
-                text = "Right"
-            )
-        }
-        Text(
-            text = "BigJeon",
-            color = Color.Red,
-            fontSize = 20.sp
-        )
-    }
-}
-
-@Composable
-private fun ColumnRowPractice2() {
-    Column(
+ @Composable
+ private fun cardPractice(index: String){
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
-            .background(Color.Cyan)
-            .border(
-                border = BorderStroke(5.dp, color = Color.Blue)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+            .height(100.dp)
+            .padding(10.dp),
+        shape = RoundedCornerShape(50.dp),
+        border = BorderStroke(1.dp, Color.Black),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
+            )
+        ) {
         Box(
             modifier = Modifier
-                .padding(top = 20.dp)
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.test_image),
-                contentDescription = "This is my photo",
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(50.dp))
-            )
-        }
-        Text(
-            text = "Big Jeon",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 30.dp)
-        )
-        Text(
-            text = "AOS - Developer",
-            fontSize = 15.sp,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(Color.LightGray),
+            contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "EMail",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(10.dp)
-            )
-            Text(
-                text = "robert6728@naver.com",
-                fontSize = 15.sp,
-                color = Color.Blue,
-                modifier = Modifier.padding(10.dp)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "Mobile",
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(10.dp)
-            )
-            Text(
-                text = "010-4037-6728",
-                fontSize = 15.sp,
-                color = Color.Blue,
-                modifier = Modifier.padding(10.dp)
+                text = index,
+                fontSize = 30.sp
             )
         }
     }
-}
+ }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        ColumnRowPractice2()
+        Column {
+            cardPractice("1")
+            cardPractice("2")
+            cardPractice("3")
+            cardPractice("4")
+        }
     }
 }
