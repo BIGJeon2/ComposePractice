@@ -1,6 +1,7 @@
 package com.jeon.composepractice
 
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -57,10 +58,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -77,81 +80,74 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.jeon.composepractice.ui.theme.ComposePracticeTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
 
+
+// https://jsonplaceholder.typicode.com/posts/1
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                myNavController(navController = rememberNavController())
-            }
-        }
-    }
-}
+                val coroutineScope = rememberCoroutineScope()
+                val retrofitInstance = RetrofitInstance.getInstance().create(MyApi::class.java)
 
-@Composable
-private fun gridScreen(navController: NavHostController){
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier.padding(20.dp)
-    ) {
-        items(15) { num ->
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .border(1.dp, Color.Black)
-                    .clickable {
-                        navController.navigate("myNumberScreen/$num")
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ){
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                val response = retrofitInstance.getPost1()
+                                Log.d("MainActivity", response.body().toString())
+                            }
+                        }
+                    ) {
+                        Text(text = "Request API Data")
                     }
-            ){
-                Text(
-                    text = num.toString(),
-                    fontSize = 30.sp
-                )
+                }
             }
-
         }
-    }
-
-}
-
-@Composable
-private fun innerScreen(num: String?){
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = num.toString(),
-            fontSize = 30.sp
-        )
     }
 }
 
-@Composable
-private fun myNavController(navController: NavHostController){
-    NavHost(
-        navController = navController,
-        startDestination = "myGridScreen"
-    ) {
-        composable("myGridScreen") {
-            gridScreen(navController)
-        }
-        composable("myNumberScreen/{num}") { navBackStackEntry ->
-            innerScreen(num = navBackStackEntry.arguments?.getString("num"))
-        }
+data class Post(
+    val userID: Int,
+    val id: Int,
+    val title: String,
+    val body: String
+)
+
+object RetrofitInstance{
+    const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+
+    val client = Retrofit
+        .Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    fun getInstance(): Retrofit {
+        return client
     }
+}
+
+interface MyApi {
+    @GET("posts/1")
+    suspend fun getPost1(): Response<Post>
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        myNavController(navController = rememberNavController())
+
     }
 }
