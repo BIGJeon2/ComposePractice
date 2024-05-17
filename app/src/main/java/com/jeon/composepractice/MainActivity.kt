@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -104,7 +105,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                drawerPractice()
+                dialogPractice()
             }
         }
     }
@@ -112,135 +113,75 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun drawerPractice(){
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-    val screens = listOf(
-        Screen.home,
-        Screen.settings,
-        Screen.phone,
-        Screen.search,
-        Screen.lock,
-    )
+private fun dialogPractice(){
 
-    val selectedScreen: MutableState<Screen> = remember {
-        mutableStateOf(Screen.home)
+    var customDialogFlag by remember {
+        mutableStateOf(false)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "MyDrawer")
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu"
+    var inputText by remember {
+        mutableStateOf("")
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                customDialogFlag = true
+            }
+        ) {
+            Text(text = "Show dialog")
+        }
+
+        if (customDialogFlag){
+            AlertDialog(
+                onDismissRequest = { /*TODO*/ },
+                confirmButton = {
+                    Button(
+                        onClick = { customDialogFlag = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Blue
                         )
+                    ) {
+                        Text(text = "Confirm")
                     }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = { customDialogFlag = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red
+                        )
+                    ) {
+                        Text(text = "Cancel")
+                    }
+                },
+                title = {
+                    Text(text = "Dialog Title")
+                },
+                text = {
+                    TextField(
+                        value = inputText,
+                        onValueChange = {
+                            inputText = it
+                        }
+                    )
                 }
             )
-        },
-
-    ) { paddingValues ->
-
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            modifier = Modifier.padding(paddingValues),
-            drawerContent = {
-                ModalDrawerSheet {
-                    screens.forEach {screen ->
-                        NavigationDrawerItem(
-                            label = {
-                                    Text(text = screen.name)
-                            },
-                            selected = screen == selectedScreen.value,
-                            onClick = {
-                                scope.launch { drawerState.close() }
-                                selectedScreen.value = screen
-                            },
-                            icon = {
-                                Icon(imageVector = screen.icon, contentDescription = screen.name)
-                            }
-                        )
-                    }
-                }
-            },
-            content = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    when(selectedScreen.value) {
-                        Screen.home -> homeScreen()
-                        Screen.settings -> settingsScreen()
-                        Screen.phone -> phoneScreen()
-                        Screen.search -> searchScreen()
-                        Screen.lock -> lockScreen()
-                    }
-                }
-            }
-        )
+        }
+        if (inputText.isNotEmpty()){
+            Text(text = "Input Text = $inputText")
+        }
     }
-
-}
-
-@Composable
-private fun homeScreen(){
-
-    Text(text = "HomeScreen")
-
-}
-
-@Composable
-private fun settingsScreen(){
-
-    Text(text = "SettingScreen")
-
-}
-
-@Composable
-private fun phoneScreen(){
-
-    Text(text = "PhoneScreen")
-
-}
-
-@Composable
-private fun searchScreen(){
-
-    Text(text = "SearchScreen")
-
-}
-
-@Composable
-private fun lockScreen(){
-
-    Text(text = "LockScreen")
-
-}
-
-sealed class Screen(val name: String, val icon: ImageVector){
-    object home: Screen("Home", Icons.Default.Home)
-    object settings: Screen("Settings", Icons.Default.Settings)
-    object phone: Screen("Phone", Icons.Default.Phone)
-    object search: Screen("Search", Icons.Default.Search)
-    object lock: Screen("Lock", Icons.Default.Lock)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        drawerPractice()
+        dialogPractice()
     }
 }
