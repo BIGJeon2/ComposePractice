@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -70,89 +72,38 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                ScaffoldPractice()
+                LazyColumnPractice()
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ScaffoldPractice(){
-    Scaffold(
-        topBar = { topBarPractice() },
-        floatingActionButton = {myFloatingBtn()},
-        bottomBar = {BottomBar()}
-    ) { paddingValues ->
+private fun LazyColumnPractice(){
 
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Text(text = "This is contents area")
-        }
-
-    }
-}
-
-@Composable
-private fun BottomBar(){
-    BottomAppBar(
-        contentColor = Color.Red,
-        containerColor = Color.LightGray
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Home, contentDescription = "Home Button")
-            }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Favorite, contentDescription = "Favorite Button")
-            }
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(Icons.Default.Settings, contentDescription = "Setting Button")
-            }
-        }
-
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun topBarPractice(){
-    TopAppBar(
-        title = { "Main" },
-        navigationIcon = {
-            IconButton(
-                onClick = { /*TODO*/ }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "This is icon Top Bar")
-            }
-        },
-        actions = {
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Button")
-            }
-        },
-        colors = TopAppBarDefaults.smallTopAppBarColors(Color.Red)
+    val textList = listOf(
+        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M"
     )
-}
 
-@Composable
-private fun myFloatingBtn(){
-    FloatingActionButton(onClick = { /*TODO*/ }) {
-        Icon(Icons.Default.Menu, contentDescription = "Menu")
+    LazyColumn {
+        items(textList) { item ->
+            Text(
+                text = item,
+                fontSize = 60.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        ScaffoldPractice()
+        LazyColumnPractice()
     }
 }
