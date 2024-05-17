@@ -35,11 +35,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -74,32 +76,50 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                LazyRowPractice()
+                ProgressIndicatorPractice()
             }
         }
     }
 }
 
 @Composable
-private fun LazyRowPractice(){
+private fun ProgressIndicatorPractice(){
 
-    val textList = listOf(
-        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-        "A", "B", "C", "E", "F", "G", "H", "I", "J", "K", "L", "M"
-    )
+    var progressState by remember { mutableStateOf(0.0f) }
 
-    LazyRow {
-        items(textList) { item ->
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            if (progressState <1.0f){
+                progressState += 0.1f
+            }else{
+                progressState = 0.0f
+            }
+        }) {
             Text(
-                text = item,
-                fontSize = 60.sp,
-                modifier = Modifier.clickable {
-                    println("Clicked item is $item")
-                }
+                text = "분노 게이지",
+                fontSize = 30.sp
             )
         }
+
+        Spacer(modifier = Modifier.size(30.dp))
+
+        LinearProgressIndicator(
+            progress = progressState,
+            modifier = Modifier.height(10.dp),
+            color = Color.Red,
+            trackColor = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.size(30.dp))
+
+        CircularProgressIndicator(
+            progress = progressState,
+            color = Color.Red,
+        )
     }
 
 }
@@ -108,6 +128,6 @@ private fun LazyRowPractice(){
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        LazyRowPractice()
+        ProgressIndicatorPractice()
     }
 }
