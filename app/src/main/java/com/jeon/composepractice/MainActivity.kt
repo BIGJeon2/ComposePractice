@@ -46,6 +46,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -77,93 +78,95 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                TextArea3()
+                showHidePractice2()
             }
         }
     }
 }
 
+//버튼 클릭시 새로운 버튼 표출
 @Composable
-private fun TextArea1(){
+private fun showHidePractice(){
+
+    var isButtonVisibility by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+            isButtonVisibility = !isButtonVisibility
+                println(isButtonVisibility)
+            }
+        ) {
+            if (isButtonVisibility){
+                Text(
+                    text = "숨기기",
+                    fontSize = 30.sp
+                )
+            }else{
+                Text(
+                    text = "보이기",
+                    fontSize = 30.sp
+                )
+            }
+
+            if (isButtonVisibility){
+                Button(
+                    onClick = {
+                    /*TODO*/
+                    }
+                ) {
+                    Text(
+                        text = "짜란",
+                        fontSize = 30.sp
+                    )
+                }
+            }
+
+        }
+    }
+
+}
+
+@Composable
+private fun showHidePractice2(){
+    var switchState by remember {
+        mutableStateOf(false)
+    }
 
     Column {
-
-        Text(
-            text = "Hi, ",
-            fontSize = 100.sp,
-            color = Color.Red
+        Switch(
+            checked = switchState,
+            onCheckedChange = {
+                switchState = !switchState
+            }
         )
 
         Text(
-            text = "I am",
-            fontSize = 100.sp,
-            color = Color.Blue
+            text = if (switchState) "ON" else "OFF",
+            fontSize = 30.sp
         )
 
-        Text(
-            text = "Big Jeon",
-            fontSize = 100.sp,
-            color = Color.Cyan
-        )
+        if (switchState){
+            Button(onClick = { /*TODO*/ }) {
+                Text(
+                    text = "얍얍",
+                    fontSize = 100.sp
+                )
+            }
+        }
 
     }
 
-}
-
-@Composable
-private fun TextArea2(){
-
-    Column {
-
-        MyTextFormat1("Hi, ", 100.sp, Color.Green)
-
-        MyTextFormat1("I am ", 100.sp, Color.Red)
-
-        MyTextFormat1("Big-Jeon ", 100.sp, Color.Blue)
-
-    }
-
-}
-
-@Composable
-private fun TextArea3(){
-
-    MyTextFormat2{
-        Text(
-            text = "안녕",
-            fontSize = 100.sp,
-            color = Color.LightGray
-        )
-    }
-
-}
-
-@Composable
-private fun MyTextFormat1(text1: String, fonsSize: TextUnit, color: Color){
-
-    Text(
-        text = text1,
-        fontSize = fonsSize,
-        color = color
-    )
-
-}
-
-@Composable
-private fun MyTextFormat2(content: @Composable () -> Unit){
-    Column {
-        content()
-        content()
-        content()
-        content()
-        content()
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        TextArea3()
+        showHidePractice2()
     }
 }
