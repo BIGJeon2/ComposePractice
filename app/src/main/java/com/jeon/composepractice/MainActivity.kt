@@ -64,6 +64,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -76,58 +77,93 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                ProgressIndicatorPractice()
+                TextArea3()
             }
         }
     }
 }
 
 @Composable
-private fun ProgressIndicatorPractice(){
+private fun TextArea1(){
 
-    var progressState by remember { mutableStateOf(0.0f) }
+    Column {
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = {
-            if (progressState <1.0f){
-                progressState += 0.1f
-            }else{
-                progressState = 0.0f
-            }
-        }) {
-            Text(
-                text = "분노 게이지",
-                fontSize = 30.sp
-            )
-        }
-
-        Spacer(modifier = Modifier.size(30.dp))
-
-        LinearProgressIndicator(
-            progress = progressState,
-            modifier = Modifier.height(10.dp),
-            color = Color.Red,
-            trackColor = Color.Gray
+        Text(
+            text = "Hi, ",
+            fontSize = 100.sp,
+            color = Color.Red
         )
 
-        Spacer(modifier = Modifier.size(30.dp))
+        Text(
+            text = "I am",
+            fontSize = 100.sp,
+            color = Color.Blue
+        )
 
-        CircularProgressIndicator(
-            progress = progressState,
-            color = Color.Red,
+        Text(
+            text = "Big Jeon",
+            fontSize = 100.sp,
+            color = Color.Cyan
+        )
+
+    }
+
+}
+
+@Composable
+private fun TextArea2(){
+
+    Column {
+
+        MyTextFormat1("Hi, ", 100.sp, Color.Green)
+
+        MyTextFormat1("I am ", 100.sp, Color.Red)
+
+        MyTextFormat1("Big-Jeon ", 100.sp, Color.Blue)
+
+    }
+
+}
+
+@Composable
+private fun TextArea3(){
+
+    MyTextFormat2{
+        Text(
+            text = "안녕",
+            fontSize = 100.sp,
+            color = Color.LightGray
         )
     }
 
+}
+
+@Composable
+private fun MyTextFormat1(text1: String, fonsSize: TextUnit, color: Color){
+
+    Text(
+        text = text1,
+        fontSize = fonsSize,
+        color = color
+    )
+
+}
+
+@Composable
+private fun MyTextFormat2(content: @Composable () -> Unit){
+    Column {
+        content()
+        content()
+        content()
+        content()
+        content()
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        ProgressIndicatorPractice()
+        TextArea3()
     }
 }
