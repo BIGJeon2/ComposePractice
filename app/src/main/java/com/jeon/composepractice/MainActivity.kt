@@ -69,6 +69,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.jeon.composepractice.ui.theme.ComposePracticeTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
@@ -78,87 +82,107 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                showHidePractice2()
+                navScreen()
             }
         }
     }
 }
 
-//버튼 클릭시 새로운 버튼 표출
 @Composable
-private fun showHidePractice(){
-
-    var isButtonVisibility by remember { mutableStateOf(false) }
+private fun firstScreen(navController: NavHostController){
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "FirstScreen",
+            fontSize = 30.sp
+        )
         Button(
             onClick = {
-            isButtonVisibility = !isButtonVisibility
-                println(isButtonVisibility)
+                navController.navigate("screen2")
             }
         ) {
-            if (isButtonVisibility){
-                Text(
-                    text = "숨기기",
-                    fontSize = 30.sp
-                )
-            }else{
-                Text(
-                    text = "보이기",
-                    fontSize = 30.sp
-                )
-            }
-
-            if (isButtonVisibility){
-                Button(
-                    onClick = {
-                    /*TODO*/
-                    }
-                ) {
-                    Text(
-                        text = "짜란",
-                        fontSize = 30.sp
-                    )
-                }
-            }
-
+            Text(
+                text = "2번 화면으로 이동",
+                fontSize = 30.sp
+            )
         }
     }
 
 }
 
 @Composable
-private fun showHidePractice2(){
-    var switchState by remember {
-        mutableStateOf(false)
-    }
+private fun secondScreen(navController: NavHostController){
 
-    Column {
-        Switch(
-            checked = switchState,
-            onCheckedChange = {
-                switchState = !switchState
-            }
-        )
-
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-            text = if (switchState) "ON" else "OFF",
+            text = "SecondScreen",
             fontSize = 30.sp
         )
-
-        if (switchState){
-            Button(onClick = { /*TODO*/ }) {
-                Text(
-                    text = "얍얍",
-                    fontSize = 100.sp
-                )
+        Button(
+            onClick = {
+                navController.navigate("screen3")
             }
+        ) {
+            Text(
+                text = "3번 화면으로 이동",
+                fontSize = 30.sp
+            )
         }
+    }
 
+}
+
+@Composable
+private fun thirdScreen(navController: NavHostController){
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "ThirdScreen",
+            fontSize = 30.sp
+        )
+        Button(
+            onClick = {
+                navController.navigate("screen1")
+            }
+        ) {
+            Text(
+                text = "1번 화면으로 이동",
+                fontSize = 30.sp
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun navScreen(){
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "screen1"
+    ){
+        composable("screen1"){
+            firstScreen(navController = navController)
+        }
+        composable("screen2"){
+            secondScreen(navController = navController)
+        }
+        composable("screen3"){
+            thirdScreen(navController = navController)
+        }
     }
 
 }
@@ -167,6 +191,6 @@ private fun showHidePractice2(){
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        showHidePractice2()
+        navScreen()
     }
 }
