@@ -31,7 +31,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -40,12 +43,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -54,7 +61,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,6 +75,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -89,14 +99,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-
-// https://jsonplaceholder.typicode.com/posts/1
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                insertPostData()
+                drawerPractice()
             }
         }
     }
@@ -104,94 +112,135 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun insertPostData(){
-    // 입력 하는 숫자
-    var insertNumber by remember {
-        mutableStateOf("")
-    }
-    // 받아온 데이터 모델
-    var post by remember {
-        mutableStateOf<Post?>(null)
-    }
-    // API 통신 부
-    val coroutineScope = rememberCoroutineScope()
+private fun drawerPractice(){
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val screens = listOf(
+        Screen.home,
+        Screen.settings,
+        Screen.phone,
+        Screen.search,
+        Screen.lock,
+    )
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(
-            value = insertNumber,
-            onValueChange = { insertNumber = it },
-            label = { Text(text = "값을 입력 해주세요.(숫자)") }
-        )
-        Button(
-            onClick = {
-                val num = insertNumber.toIntOrNull()
-                if (num != null){
-                    coroutineScope.launch {
-                        post = getPostData(num)
+    val selectedScreen: MutableState<Screen> = remember {
+        mutableStateOf(Screen.home)
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "MyDrawer")
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Menu"
+                        )
+                    }
+                }
+            )
+        },
+
+    ) { paddingValues ->
+
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            modifier = Modifier.padding(paddingValues),
+            drawerContent = {
+                ModalDrawerSheet {
+                    screens.forEach {screen ->
+                        NavigationDrawerItem(
+                            label = {
+                                    Text(text = screen.name)
+                            },
+                            selected = screen == selectedScreen.value,
+                            onClick = {
+                                scope.launch { drawerState.close() }
+                                selectedScreen.value = screen
+                            },
+                            icon = {
+                                Icon(imageVector = screen.icon, contentDescription = screen.name)
+                            }
+                        )
+                    }
+                }
+            },
+            content = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    when(selectedScreen.value) {
+                        Screen.home -> homeScreen()
+                        Screen.settings -> settingsScreen()
+                        Screen.phone -> phoneScreen()
+                        Screen.search -> searchScreen()
+                        Screen.lock -> lockScreen()
                     }
                 }
             }
-        ) {
-            Text(text = "데이터 요청")
-        }
-        post?.let {
-            Text(text = "UserID : " + it.userID)
-            Text(text = "ID : " + it.id)
-            Text(text = "Title : " + it.title)
-            Text(text = "Body : " + it.body)
-        }
+        )
     }
 
 }
 
-private suspend fun getPostData(num: Int) : Post?{
+@Composable
+private fun homeScreen(){
 
-    val retrofitInstance = RetrofitInstance.getInstance().create(MyApi::class.java)
-    val response = retrofitInstance.getPostNumber(num)
+    Text(text = "HomeScreen")
 
-    return if (response.isSuccessful) response.body() else null
 }
 
-data class Post(
-    val userID: Int,
-    val id: Int,
-    val title: String,
-    val body: String
-)
+@Composable
+private fun settingsScreen(){
 
-object RetrofitInstance{
-    const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+    Text(text = "SettingScreen")
 
-    val client = Retrofit
-        .Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    fun getInstance(): Retrofit {
-        return client
-    }
 }
 
-interface MyApi {
-    @GET("posts/1")
-    suspend fun getPost1(): Response<Post>
+@Composable
+private fun phoneScreen(){
 
-    @GET("posts/{number}")
-    suspend fun getPostNumber(
-        @Path("number") number : Int
-    ) : Response<Post>
+    Text(text = "PhoneScreen")
 
+}
+
+@Composable
+private fun searchScreen(){
+
+    Text(text = "SearchScreen")
+
+}
+
+@Composable
+private fun lockScreen(){
+
+    Text(text = "LockScreen")
+
+}
+
+sealed class Screen(val name: String, val icon: ImageVector){
+    object home: Screen("Home", Icons.Default.Home)
+    object settings: Screen("Settings", Icons.Default.Settings)
+    object phone: Screen("Phone", Icons.Default.Phone)
+    object search: Screen("Search", Icons.Default.Search)
+    object lock: Screen("Lock", Icons.Default.Lock)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        insertPostData()
+        drawerPractice()
     }
 }
