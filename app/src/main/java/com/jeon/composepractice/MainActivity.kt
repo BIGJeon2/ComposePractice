@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -82,115 +84,74 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                navScreen()
+                myNavController(navController = rememberNavController())
             }
         }
     }
 }
 
 @Composable
-private fun firstScreen(navController: NavHostController){
+private fun gridScreen(navController: NavHostController){
 
-    Column(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier.padding(20.dp)
+    ) {
+        items(15) { num ->
+
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .border(1.dp, Color.Black)
+                    .clickable {
+                        navController.navigate("myNumberScreen/$num")
+                    }
+            ){
+                Text(
+                    text = num.toString(),
+                    fontSize = 30.sp
+                )
+            }
+
+        }
+    }
+
+}
+
+@Composable
+private fun innerScreen(num: String?){
+    Box(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "FirstScreen",
+            text = num.toString(),
             fontSize = 30.sp
         )
-        Button(
-            onClick = {
-                navController.navigate("screen2")
-            }
-        ) {
-            Text(
-                text = "2번 화면으로 이동",
-                fontSize = 30.sp
-            )
-        }
     }
-
 }
 
 @Composable
-private fun secondScreen(navController: NavHostController){
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "SecondScreen",
-            fontSize = 30.sp
-        )
-        Button(
-            onClick = {
-                navController.navigate("screen3")
-            }
-        ) {
-            Text(
-                text = "3번 화면으로 이동",
-                fontSize = 30.sp
-            )
-        }
-    }
-
-}
-
-@Composable
-private fun thirdScreen(navController: NavHostController){
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "ThirdScreen",
-            fontSize = 30.sp
-        )
-        Button(
-            onClick = {
-                navController.navigate("screen1")
-            }
-        ) {
-            Text(
-                text = "1번 화면으로 이동",
-                fontSize = 30.sp
-            )
-        }
-    }
-
-}
-
-@Composable
-private fun navScreen(){
-    val navController = rememberNavController()
-
+private fun myNavController(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = "screen1"
-    ){
-        composable("screen1"){
-            firstScreen(navController = navController)
+        startDestination = "myGridScreen"
+    ) {
+        composable("myGridScreen") {
+            gridScreen(navController)
         }
-        composable("screen2"){
-            secondScreen(navController = navController)
-        }
-        composable("screen3"){
-            thirdScreen(navController = navController)
+        composable("myNumberScreen/{num}") { navBackStackEntry ->
+            innerScreen(num = navBackStackEntry.arguments?.getString("num"))
         }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-        navScreen()
+        myNavController(navController = rememberNavController())
     }
 }
