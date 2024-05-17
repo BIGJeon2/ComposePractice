@@ -87,6 +87,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 
 // https://jsonplaceholder.typicode.com/posts/1
@@ -95,27 +96,64 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposePracticeTheme {
-                val coroutineScope = rememberCoroutineScope()
-                val retrofitInstance = RetrofitInstance.getInstance().create(MyApi::class.java)
-
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
-                    Button(
-                        onClick = {
-                            coroutineScope.launch {
-                                val response = retrofitInstance.getPost1()
-                                Log.d("MainActivity", response.body().toString())
-                            }
-                        }
-                    ) {
-                        Text(text = "Request API Data")
-                    }
-                }
+                insertPostData()
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun insertPostData(){
+    // 입력 하는 숫자
+    var insertNumber by remember {
+        mutableStateOf("")
+    }
+    // 받아온 데이터 모델
+    var post by remember {
+        mutableStateOf<Post?>(null)
+    }
+    // API 통신 부
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        TextField(
+            value = insertNumber,
+            onValueChange = { insertNumber = it },
+            label = { Text(text = "값을 입력 해주세요.(숫자)") }
+        )
+        Button(
+            onClick = {
+                val num = insertNumber.toIntOrNull()
+                if (num != null){
+                    coroutineScope.launch {
+                        post = getPostData(num)
+                    }
+                }
+            }
+        ) {
+            Text(text = "데이터 요청")
+        }
+        post?.let {
+            Text(text = "UserID : " + it.userID)
+            Text(text = "ID : " + it.id)
+            Text(text = "Title : " + it.title)
+            Text(text = "Body : " + it.body)
+        }
+    }
+
+}
+
+private suspend fun getPostData(num: Int) : Post?{
+
+    val retrofitInstance = RetrofitInstance.getInstance().create(MyApi::class.java)
+    val response = retrofitInstance.getPostNumber(num)
+
+    return if (response.isSuccessful) response.body() else null
 }
 
 data class Post(
@@ -142,12 +180,18 @@ object RetrofitInstance{
 interface MyApi {
     @GET("posts/1")
     suspend fun getPost1(): Response<Post>
+
+    @GET("posts/{number}")
+    suspend fun getPostNumber(
+        @Path("number") number : Int
+    ) : Response<Post>
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ComposePracticeTheme {
-
+        insertPostData()
     }
 }
